@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1d4ed8">
+<title>투자 관제탑</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js" defer></script>
+</head>
+<body>
+<!-- 잠금 화면 -->
+<div id="lock" class="lock">
+  <form id="lockForm" class="lock-card" autocomplete="on">
+    <div class="lock-logo"><img src="icon.svg" alt=""></div>
+    <h1>투자 관제탑</h1>
+    <p class="muted">화면 데이터는 암호화되어 있습니다. 비밀번호를 입력하세요.</p>
+    <input type="text" name="username" value="invest-hub" autocomplete="username" hidden>
+    <input id="pw" type="password" autocomplete="current-password" placeholder="비밀번호" required>
+    <label class="chk"><input id="remember" type="checkbox" checked> 이 기기에서 기억</label>
+    <button type="submit" class="btn primary">열기</button>
+    <p id="lockMsg" class="lock-msg"></p>
+  </form>
+</div>
+
+<div id="app" class="shell" hidden>
+  <aside class="nav" id="nav">
+    <div class="brand"><img src="icon.svg" alt=""><span>투자 관제탑</span></div>
+    <nav>
+      <a href="#home" data-page="home"><i>◎</i><span>오늘의 관제</span></a>
+      <a href="#buy" data-page="buy"><i>◆</i><span>매수자리 점수</span></a>
+      <a href="#conv" data-page="conv"><i>◈</i><span>확신 종목 전략</span></a>
+      <a href="#chart" data-page="chart"><i>▤</i><span>실시간 차트</span></a>
+      <a href="#macro" data-page="macro"><i>◐</i><span>경제 안정성</span></a>
+      <a href="#market" data-page="market"><i>▦</i><span>시장 전체</span></a>
+      <a href="#bear" data-page="bear"><i>▼</i><span>하락장 전략실</span></a>
+    </nav>
+    <div class="nav-foot">
+      <div id="navAsof" class="muted small"></div>
+      <button id="installBtn" class="btn ghost small" hidden>앱으로 설치</button>
+      <button id="logoutBtn" class="btn ghost small">잠그기</button>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="crumb" id="crumb">오늘의 관제</div>
+      <div class="top-right">
+        <span id="liveDot" class="dot"></span>
+        <span id="asof" class="muted small"></span>
+        <button id="refreshBtn" class="btn ghost small" title="최신 데이터 다시 받기">새로고침</button>
+      </div>
+    </header>
+    <div class="tape" id="tape"></div>
+    <section id="view" class="view"></section>
+    <footer class="foot muted small">
+      정보 도구이며 투자 자문이 아닙니다. 점수·신호는 과거 데이터 기반 확률 평가이며 미래 수익을 보장하지 않습니다.
+      시세 Yahoo Finance(지연 가능) · 실시간 차트 TradingView · 거시 FRED·뉴욕연준·multpl · 매매 알림 원본은 「확신 종목 감시」 메일.
+    </footer>
+  </main>
+</div>
+<div id="tip" class="tip" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>
