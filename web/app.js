@@ -405,9 +405,12 @@ function bear() {
     { name: "롱-현금 전환 (200일선 ±1% 버퍼)", ev: 3, status: ["검증 완료 · 채택", "good"],
       why: "S&P500 76년 : CAGR 8.55→8.73%, 최대낙폭 −56.8→−21.1%. 하락장에서 「버는」 전략이 아니라 「잃지 않는」 전략. 확신 종목 게이트와 같은 원리",
       now: b.spy_gap < 0 ? "지금 발동 — 대기 자금 SGOV" : `미발동 (SPY 200일선 ${pc(b.spy_gap)})` },
-    { name: "매수존 대기 중 현금담보 풋 매도", ev: 2, status: ["검증 예정", "info"],
-      why: "사려는 가격(매수존)에 풋을 팔아 대기 중 프리미엄 수취. 변동성이 클수록(하락장) 프리미엄↑. 체결되면 원래 사려던 가격에 매수, 안 되면 프리미엄만 수익. 변동성 위험 프리미엄은 학계 실증이 두터운 편",
-      now: "옵션 가격 이력 데이터가 필요 — CBOE PUT 지수·내재변동성으로 근사 백테스트 제안" },
+    { name: "매수존 대기 중 현금담보 풋 매도", ev: 2, status: ["검증 완료 · 기각", "bad"],
+      why: "2007~2026 8종목 검증 : 연 18.5% vs 기준 19.35% (개선 없음). 2020 급락 −24% vs 기준 −4.8% — 반전 확인 없이 떨어지는 칼날을 받음. 실제 풋 매도 지수도 하락장 5회 모두 손실",
+      now: "아래 검증표 참조" },
+    { name: "보유 중 익절가 콜 매도 (휠)", ev: 1, status: ["보류", "warn"],
+      why: "내재변동성이 실현변동성보다 10% 이상 높을 때만 연 +1.7%p. 가정 의존도가 커 실제 옵션 호가로 모의 운용 후 재판단",
+      now: "익절 지정가(GTC) 방식 유지" },
     { name: "추세추종(매니지드 퓨처스)·금 분산", ev: 2, status: ["검증 예정", "info"],
       why: "2022년처럼 주식·채권 동반 하락 때 DBMF·KMLM류가 플러스를 낸 사례. 주식 롱 전략과 상관이 낮아 포트폴리오 낙폭 완충",
       now: "ETF 상장 이력이 짧아 SG CTA 지수로 근사 검증 필요" },
@@ -429,8 +432,30 @@ function bear() {
   </div>
   <div class="summary"><ul>
     <li>하락장 「수익」의 현실적 원천은 ① 현금 전환으로 낙폭을 피한 뒤 ② 바닥권에서 더 싸게 사는 것 ③ 변동성 프리미엄(풋 매도) — 방향 베팅(숏)은 검증상 기각.</li>
-    <li>다음 검증 제안 : 확신 8종목 매수존에 30일 풋 매도를 결합한 근사 백테스트(2007~, 금융위기 포함) → 결과가 좋으면 이 화면에 「풋 매도 행사가」 열 추가.</li>
-  </ul></div>`;
+    <li>풋 매도 검증(2026-09-28) 결과 하락장 수익 수단으로는 기각 — 프리미엄은 폭락 위험의 대가이며, 기존 「반전 확인 후 매수」 규칙이 급락장에서 훨씬 방어적.</li>
+  </ul></div>
+  ${putStudy()}`;
+}
+function putStudy() {
+  const ps = D.put_study; if (!ps) return "";
+  const tone = v => v == null ? "" : cls(v);
+  return `<div class="card"><h2>풋 매도 백테스트 — 확신 종목 매수존 결합 (${ps.asof})</h2><div class="sub">${esc(ps.setup)}</div>
+    <div class="note" style="margin-bottom:12px"><b>모형 검증</b> · ${esc(ps.validation)}</div>
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th>전략</th><th>연 수익률</th><th>최대 낙폭</th><th>2008 위기</th><th>2018 4Q</th><th>2020 코로나</th><th>2022 긴축</th><th class="l">판정</th></tr></thead><tbody>
+    ${ps.rows.map(r => `<tr><td><b>${r.k}</b> ${esc(r.name)}</td><td class="num">${nf(r.cagr, 2)}%</td><td class="num down">${nf(r.mdd, 1)}%</td>
+      <td class="num ${tone(r.p2008)}">${pc(r.p2008)}</td><td class="num ${tone(r.p2018)}">${pc(r.p2018)}</td><td class="num ${tone(r.p2020)}">${pc(r.p2020)}</td><td class="num ${tone(r.p2022)}">${pc(r.p2022)}</td>
+      <td class="l">${pill(r.verdict[0], r.verdict[1])}</td></tr>`).join("")}</tbody></table></div>
+    <div class="grid g2" style="margin-top:14px">
+      <div><h3>내재변동성 가정별 연 수익률 (기준 A ${ps.sens.A}%)</h3>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>IV = 실현변동성 ×</th>${ps.sens.mults.map(m => `<th>${m}</th>`).join("")}</tr></thead><tbody>
+        ${["B", "D", "G"].map(k => `<tr><td>${k}</td>${ps.sens[k].map(v => `<td class="num ${v != null && v > ps.sens.A ? "up" : ""}">${v == null ? "–" : nf(v, 2) + "%"}</td>`).join("")}</tr>`).join("")}
+        </tbody></table></div><div class="muted small" style="margin-top:6px">개별주 옵션은 지수보다 변동성 프리미엄이 작다는 실증이 다수 → ×1.0~1.1 이 현실적 범위</div></div>
+      <div><h3>실제 지수 : Cboe 풋 매도(PUT) vs S&P500 총수익</h3>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>하락장</th><th>풋 매도</th><th>S&P500</th></tr></thead><tbody>
+        ${ps.index.rows.map(r => `<tr><td>${esc(r[0])}</td><td class="num down">${pc(r[1])}</td><td class="num down">${pc(r[2])}</td></tr>`).join("")}</tbody></table></div>
+        <div class="muted small" style="margin-top:6px">${esc(ps.index.long)}</div></div>
+    </div>
+    <div class="summary" style="margin-top:14px"><ul>${ps.conclusion.map(c => `<li>${esc(c)}</li>`).join("")}</ul></div></div>`;
 }
 after.bear = () => {
   const b = D.bear;
