@@ -1,0 +1,32 @@
+{
+  "_note": "화면에 표시할 종목 목록. 저장(커밋)하면 다음 빌드부터 반영. conviction = 확신 종목 감시(매수존 전략) 대상, quality = 매수자리 점수만 계산하는 우량주 관찰 목록",
+  "conviction": {
+    "GOOGL": {"name": "알파벳 A", "tv": "NASDAQ:GOOGL"},
+    "NVDA":  {"name": "엔비디아", "tv": "NASDAQ:NVDA"},
+    "KO":    {"name": "코카콜라", "tv": "NYSE:KO"},
+    "RKLB":  {"name": "로켓랩", "tv": "NASDAQ:RKLB"},
+    "IONQ":  {"name": "아이온큐", "tv": "NYSE:IONQ", "cap_pct": 7},
+    "ISRG":  {"name": "인튜이티브 서지컬", "tv": "NASDAQ:ISRG"},
+    "ANET":  {"name": "아리스타 네트웍스", "tv": "NYSE:ANET"},
+    "ASML":  {"name": "ASML 홀딩", "tv": "NASDAQ:ASML"}
+  },
+  "quality": {
+    "MSFT": {"name": "마이크로소프트", "tv": "NASDAQ:MSFT"},
+    "AAPL": {"name": "애플", "tv": "NASDAQ:AAPL"},
+    "AMZN": {"name": "아마존", "tv": "NASDAQ:AMZN"},
+    "META": {"name": "메타", "tv": "NASDAQ:META"},
+    "AVGO": {"name": "브로드컴", "tv": "NASDAQ:AVGO"},
+    "TSM":  {"name": "TSMC", "tv": "NYSE:TSM"},
+    "COST": {"name": "코스트코", "tv": "NASDAQ:COST"},
+    "V":    {"name": "비자", "tv": "NYSE:V"},
+    "MA":   {"name": "마스터카드", "tv": "NYSE:MA"},
+    "LLY":  {"name": "일라이 릴리", "tv": "NYSE:LLY"},
+    "NOW":  {"name": "서비스나우", "tv": "NYSE:NOW"},
+    "CRWD": {"name": "크라우드스트라이크", "tv": "NASDAQ:CRWD"},
+    "VRT":  {"name": "버티브", "tv": "NYSE:VRT"},
+    "SPGI": {"name": "S&P 글로벌", "tv": "NYSE:SPGI"},
+    "MCO":  {"name": "무디스", "tv": "NYSE:MCO"},
+    "KLAC": {"name": "KLA", "tv": "NASDAQ:KLAC"}
+  },
+  "benchmarks": {"SPY": "S&P 500 ETF", "QQQ": "나스닥100 ETF"}
+}
