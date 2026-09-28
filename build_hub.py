@@ -282,6 +282,9 @@ def main():
     payload = {"asof": now.strftime("%Y-%m-%d %H:%M UTC"),
                "asof_kst": (now + dt.timedelta(hours=9)).strftime("%Y-%m-%d %H:%M KST"),
                "stability": stab, "market": market, **stocks, "log": LOG[-40:]}
+    ps = ROOT / "config" / "put_study.json"
+    if ps.exists():
+        payload["put_study"] = json.loads(ps.read_text(encoding="utf-8"))
     SITE.mkdir(exist_ok=True)
     for p in (ROOT / "web").iterdir():
         if p.is_file():
