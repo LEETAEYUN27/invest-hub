@@ -1,0 +1,54 @@
+name: 관제탑 빌드
+
+on:
+  schedule:
+    - cron: "*/30 13-21 * * 1-5"   # 미국 정규장 전후 30분 간격 (UTC)
+    - cron: "15 0,4,8,11 * * *"    # 장외 시간 4회 (거시·관제실 갱신 반영)
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore: ["README.md"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/cache@v4
+        with:
+          path: state
+          key: hub-state-${{ github.run_id }}
+          restore-keys: hub-state-
+      - run: pip install -r requirements.txt
+      - name: 수집·계산·암호화
+        env:
+          HUB_PASSWORD: ${{ secrets.HUB_PASSWORD }}
+          GH_READ_TOKEN: ${{ secrets.GH_READ_TOKEN }}
+          HOLDINGS_JSON: ${{ secrets.HOLDINGS_JSON }}
+        run: python build_hub.py
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.d.outputs.page_url }}
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4
