@@ -7,7 +7,7 @@ import time
 import pandas as pd
 import requests
 
-UA = {"User-Agent": "Mozilla/5.0 (invest-hub)"}
+UA: dict = {}  # FRED 는 브라우저형 UA 를 지연 응답(타피팅)함 → requests 기본 UA 사용
 
 
 def prices(tickers: list[str], period="15y") -> dict[str, pd.DataFrame]:
@@ -51,11 +51,11 @@ def intraday_last(tickers: list[str]) -> dict[str, dict]:
     return out
 
 
-def _get(url: str, tries=4, **kw) -> requests.Response:
+def _get(url: str, tries=3, **kw) -> requests.Response:
     err = None
     for k in range(tries):
         try:
-            r = requests.get(url, headers=UA, timeout=60, **kw)
+            r = requests.get(url, headers=UA, timeout=(10, 30), **kw)
             r.raise_for_status()
             return r
         except Exception as e:  # 일시 차단·연결 끊김 재시도
